@@ -3,6 +3,7 @@ const { Cart } = require("../model/Cart");
 const { User } = require("../model/User");
 const { Product } = require("../model/Product");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const sendEmail = require('../utils/userEmail');
 
 const cart = async (req, res) => {
   try {
@@ -261,6 +262,15 @@ const payment = async (req, res) => {
       cancel_url:`${currentUrl}/cancel`
     })
 
+    // send mail to user 
+    await sendEmail(
+      user.email,
+      user.cart.products.map((item)=>({
+        name:item.product.name,
+        price:item.product.price
+      }))
+    )
+
     //empty cart
     user.cart.products=[];
     user.cart.total=0;
@@ -270,7 +280,6 @@ const payment = async (req, res) => {
       message:"get the payment url",
       url:session.url
     })
-
 
   } catch (error) {
     console.log(error);

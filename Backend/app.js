@@ -24,5 +24,5 @@ app.get("/",(req,res)=>{
 })
 
 app.listen(PORT,(req,res)=>{
-    console.log(`server started!! at http://localhost:${PORT}`)
+    console.log(`server started at ${PORT}`)
 })
